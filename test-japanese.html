@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>日本語文字列テスト</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-10 mx-auto">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title mb-0">🇯🇵 日本語文字列 読み書きテスト</h3>
+                        <p class="text-muted mb-0 mt-2">UTF-8対応の日本語文字列書き込み・読み込み機能のテスト</p>
+                    </div>
+                    <div class="card-body">
+                        
+                        <!-- 接続状態 -->
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="card bg-light">
+                                    <div class="card-body py-2">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div id="connectionStatus" class="badge bg-secondary me-2">未接続</div>
+                                                    <span class="small">接続状態</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div id="cardStatus" class="badge bg-secondary me-2">未検出</div>
+                                                    <span class="small">カード状態</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="small">
+                                                    <strong>IDm:</strong> <span id="cardIdm">-</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button class="btn btn-sm btn-primary w-100" id="quickConnect">
+                                                    <i class="bi bi-plug"></i> 接続
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <!-- 左側: 日本語テストサンプル -->
+                            <div class="col-md-6">
+                                <!-- プリセット日本語テスト -->
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="bi bi-translate"></i> 日本語プリセットテスト</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-primary w-100" onclick="testJapanese('こんにちは', 0)">
+                                                    こんにちは
+                                                </button>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-primary w-100" onclick="testJapanese('ありがとう', 1)">
+                                                    ありがとう
+                                                </button>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-primary w-100" onclick="testJapanese('日本語テスト', 2)">
+                                                    日本語テスト
+                                                </button>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-primary w-100" onclick="testJapanese('カタカナ', 3)">
+                                                    カタカナ
+                                                </button>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-success w-100" onclick="testJapanese('あいうえお', 0)">
+                                                    ひらがな
+                                                </button>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-info w-100" onclick="testJapanese('漢字テスト', 0)">
+                                                    漢字
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr>
+                                        
+                                        <!-- 混合文字テスト -->
+                                        <h6 class="mb-2">混合文字テスト</h6>
+                                        <div class="row">
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-warning w-100" onclick="testJapanese('Hello世界', 0)">
+                                                    英日混合
+                                                </button>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-warning w-100" onclick="testJapanese('Test123テスト', 0)">
+                                                    英数日混合
+                                                </button>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-danger w-100" onclick="testJapanese('😀👋🇯🇵', 0)">
+                                                    絵文字
+                                                </button>
+                                            </div>
+                                            <div class="col-6 mb-2">
+                                                <button class="btn btn-outline-danger w-100" onclick="testJapanese('記号！？＃', 0)">
+                                                    全角記号
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- カスタム入力 -->
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="bi bi-keyboard"></i> カスタム日本語入力</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row mb-3">
+                                            <div class="col-4">
+                                                <label class="form-label">ブロック:</label>
+                                                <select class="form-select" id="customBlock">
+                                                    <option value="0">ブロック 0</option>
+                                                    <option value="1">ブロック 1</option>
+                                                    <option value="2">ブロック 2</option>
+                                                    <option value="3">ブロック 3</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-8">
+                                                <label class="form-label">日本語テキスト:</label>
+                                                <input type="text" class="form-control" id="customText" placeholder="自由に日本語を入力してください">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="small text-muted">
+                                                    バイト数: <span id="byteCount">0</span> / 16バイト
+                                                    <span id="byteWarning" class="text-danger d-none">(16バイトを超過)</span>
+                                                </div>
+                                                <div class="small text-muted">
+                                                    切り詰め後: "<span id="truncatedText"></span>"
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <button class="btn btn-success w-100" id="writeCustom">
+                                                    <i class="bi bi-pencil-square"></i> 書き込み
+                                                </button>
+                                            </div>
+                                            <div class="col-6">
+                                                <button class="btn btn-info w-100" id="readAll">
+                                                    <i class="bi bi-arrow-clockwise"></i> 全読み込み
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- バイト長テスト -->
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="bi bi-bar-chart"></i> バイト長境界テスト</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-4 mb-2">
+                                                <button class="btn btn-outline-secondary w-100" onclick="testBoundary('あいうえお', 0)">
+                                                    15バイト
+                                                </button>
+                                            </div>
+                                            <div class="col-4 mb-2">
+                                                <button class="btn btn-outline-secondary w-100" onclick="testBoundary('あいうえおか', 0)">
+                                                    18バイト
+                                                </button>
+                                            </div>
+                                            <div class="col-4 mb-2">
+                                                <button class="btn btn-outline-secondary w-100" onclick="testBoundary('1234567890123456', 0)">
+                                                    ASCII16バイト
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="small text-muted mt-2">
+                                            日本語文字は通常3バイト、16バイト制限での切り詰め動作をテスト
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- 右側: 結果表示とログ -->
+                            <div class="col-md-6">
+                                <!-- カードデータ表示 -->
+                                <div class="card mb-3">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="bi bi-credit-card"></i> カード内容</h5>
+                                        <button class="btn btn-sm btn-outline-primary" id="refreshCard">
+                                            <i class="bi bi-arrow-clockwise"></i> 更新
+                                        </button>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="cardContent">
+                                            <!-- 動的に生成 -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- テスト結果 -->
+                                <div class="card mb-3">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="bi bi-clipboard-check"></i> テスト結果</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="testResults">
+                                            <p class="text-muted text-center">テスト結果がここに表示されます</p>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-4">
+                                                <div class="text-center">
+                                                    <div class="small text-muted">成功</div>
+                                                    <div class="h4 text-success" id="successCount">0</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-center">
+                                                    <div class="small text-muted">失敗</div>
+                                                    <div class="h4 text-danger" id="failCount">0</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-4">
+                                                <div class="text-center">
+                                                    <div class="small text-muted">総テスト</div>
+                                                    <div class="h4 text-primary" id="totalCount">0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- 実行ログ -->
+                                <div class="card">
+                                    <div class="card-header d-flex justify-content-between align-items-center">
+                                        <h5 class="mb-0"><i class="bi bi-journal-text"></i> 実行ログ</h5>
+                                        <button class="btn btn-sm btn-outline-secondary" id="clearLog">
+                                            <i class="bi bi-trash"></i> クリア
+                                        </button>
+                                    </div>
+                                    <div class="card-body p-0">
+                                        <div id="log-container" class="p-3" style="height: 250px; overflow-y: auto; background-color: #f8f9fa; font-family: monospace; font-size: 0.85em;">
+                                            <div id="log-output"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // グローバル変数
+        let nfcInstance = null;
+        let isConnected = false;
+        let successCount = 0;
+        let failCount = 0;
+        let totalCount = 0;
+
+        // ログ出力機能
+        function addLog(message, type = 'info') {
+            const logOutput = document.getElementById('log-output');
+            const timestamp = new Date().toLocaleTimeString();
+            const icon = type === 'error' ? '❌' : type === 'success' ? '✅' : type === 'warning' ? '⚠️' : 'ℹ️';
+            const logClass = type === 'error' ? 'text-danger' : type === 'success' ? 'text-success' : type === 'warning' ? 'text-warning' : '';
+            logOutput.innerHTML += `<div class="${logClass}">[${timestamp}] ${icon} ${message}</div>`;
+            document.getElementById('log-container').scrollTop = document.getElementById('log-container').scrollHeight;
+        }
+
+        function updateConnectionStatus(connected) {
+            const statusEl = document.getElementById('connectionStatus');
+            statusEl.className = connected ? 'badge bg-success' : 'badge bg-secondary';
+            statusEl.textContent = connected ? '接続済み' : '未接続';
+        }
+
+        function updateCardStatus(detected, idm = null) {
+            const statusEl = document.getElementById('cardStatus');
+            const idmEl = document.getElementById('cardIdm');
+            
+            statusEl.className = detected ? 'badge bg-success' : 'badge bg-secondary';
+            statusEl.textContent = detected ? '検出済み' : '未検出';
+            idmEl.textContent = idm || '-';
+        }
+
+        function updateCounters() {
+            document.getElementById('successCount').textContent = successCount;
+            document.getElementById('failCount').textContent = failCount;
+            document.getElementById('totalCount').textContent = totalCount;
+        }
+
+        async function updateByteCount() {
+            const text = document.getElementById('customText').value;
+            const byteLength = new TextEncoder().encode(text).length;
+            const byteCountEl = document.getElementById('byteCount');
+            const warningEl = document.getElementById('byteWarning');
+            const truncatedEl = document.getElementById('truncatedText');
+            
+            byteCountEl.textContent = byteLength;
+            
+            if (byteLength > 16) {
+                warningEl.classList.remove('d-none');
+                try {
+                    // 切り詰め後のテキストを表示
+                    const { SimpleNFC } = await import('./modules/SimpleNFC.js');
+                    const nfc = new SimpleNFC();
+                    const truncated = nfc.truncateStringToBytes(text, 16);
+                    truncatedEl.textContent = truncated;
+                } catch (error) {
+                    // フォールバック: 単純な文字数制限
+                    truncatedEl.textContent = text.substring(0, 5) + '...';
+                }
+            } else {
+                warningEl.classList.add('d-none');
+                truncatedEl.textContent = text;
+            }
+        }
+
+        // NFC接続管理
+        async function ensureConnection() {
+            if (!isConnected || !nfcInstance) {
+                const { SimpleNFC } = await import('./modules/SimpleNFC.js');
+                nfcInstance = new SimpleNFC({ debug: true, warning: true });
+                
+                await nfcInstance.connectUSBDevice();
+                await nfcInstance.openUSBDevice();
+                isConnected = true;
+                updateConnectionStatus(true);
+                addLog('USB接続確立', 'success');
+            }
+            return nfcInstance;
+        }
+
+        async function ensurePolling() {
+            const nfc = await ensureConnection();
+            const pollingResult = await nfc.pollingLiteS();
+            if (pollingResult.Error) {
+                throw new Error(`ポーリングエラー: ${pollingResult.Error.message}`);
+            }
+            
+            updateCardStatus(true, pollingResult.IDmString);
+            return pollingResult;
+        }
+
+        // カードデータ表示更新
+        async function updateCardDisplay() {
+            try {
+                await ensurePolling();
+                const result = await nfcInstance.readLiteS({ Block: [0, 1, 2, 3] });
+                
+                if (result.Error) {
+                    throw new Error(result.Error.message);
+                }
+                
+                const container = document.getElementById('cardContent');
+                container.innerHTML = '';
+                
+                for (let i = 0; i < 4; i++) {
+                    const data = result.DatasString[i] || '';
+                    const bytes = result.Datas[i] || [];
+                    const hexString = bytes.map(b => b.toString(16).padStart(2, '0')).join(' ');
+                    const byteLength = new TextEncoder().encode(data).length;
+                    
+                    container.innerHTML += `
+                        <div class="card card-body py-2 mb-2">
+                            <div class="row align-items-center">
+                                <div class="col-2">
+                                    <strong>ブロック ${i}:</strong>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-primary">"${data}"</div>
+                                    <div class="small text-muted">${byteLength}バイト</div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="small text-muted font-monospace">${hexString}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+                
+                addLog('カードデータ更新完了', 'success');
+            } catch (error) {
+                addLog(`カードデータ更新失敗: ${error.message}`, 'error');
+            }
+        }
+
+        // 日本語テスト実行
+        async function performJapaneseTest(text, block) {
+            totalCount++;
+            updateCounters();
+            
+            try {
+                await ensurePolling();
+                
+                // バイト長チェック
+                const originalByteLength = new TextEncoder().encode(text).length;
+                addLog(`テスト開始: "${text}" (${originalByteLength}バイト) -> ブロック${block}`, 'info');
+                
+                // 書き込み実行
+                const writeResult = await nfcInstance.writeLiteS({
+                    Datas: [{ Block: block, Data: text }]
+                });
+                
+                if (writeResult[0].Error) {
+                    throw new Error(writeResult[0].Error.message);
+                }
+                
+                // 読み込み確認
+                const readResult = await nfcInstance.readLiteS({ Block: [block] });
+                if (readResult.Error) {
+                    throw new Error(`読み込みエラー: ${readResult.Error.message}`);
+                }
+                
+                const readText = readResult.DatasString[0];
+                const readByteLength = new TextEncoder().encode(readText).length;
+                
+                // 結果比較
+                const isMatch = readText === text || readText === nfcInstance.truncateStringToBytes(text, 16);
+                
+                if (isMatch) {
+                    successCount++;
+                    addLog(`✅ 成功: "${text}" -> "${readText}" (${readByteLength}バイト)`, 'success');
+                    showTestResult(text, readText, block, true, originalByteLength, readByteLength);
+                } else {
+                    failCount++;
+                    addLog(`❌ 不一致: "${text}" -> "${readText}"`, 'error');
+                    showTestResult(text, readText, block, false, originalByteLength, readByteLength);
+                }
+                
+                updateCounters();
+                await updateCardDisplay();
+                
+            } catch (error) {
+                failCount++;
+                updateCounters();
+                addLog(`❌ テスト失敗: ${error.message}`, 'error');
+                showTestResult(text, '', block, false, 0, 0, error.message);
+            }
+        }
+
+        function showTestResult(expected, actual, block, success, expectedBytes, actualBytes, error = null) {
+            const container = document.getElementById('testResults');
+            const resultClass = success ? 'success' : 'danger';
+            const resultIcon = success ? '✅' : '❌';
+            
+            let errorInfo = '';
+            if (error) {
+                errorInfo = `<div class="text-danger"><strong>エラー:</strong> ${error}</div>`;
+            }
+            
+            container.innerHTML = `
+                <div class="alert alert-${resultClass}">
+                    <h6>${resultIcon} ブロック ${block} テスト結果</h6>
+                    <div><strong>書き込み:</strong> "${expected}" (${expectedBytes}バイト)</div>
+                    <div><strong>読み込み:</strong> "${actual}" (${actualBytes}バイト)</div>
+                    <div><strong>結果:</strong> ${success ? 'データ一致 ✅' : 'データ不一致 ❌'}</div>
+                    ${errorInfo}
+                </div>
+            `;
+        }
+
+        // グローバル関数
+        window.testJapanese = async (text, block) => {
+            await performJapaneseTest(text, block);
+        };
+
+        window.testBoundary = async (text, block) => {
+            await performJapaneseTest(text, block);
+        };
+
+        // イベントリスナー
+        document.getElementById('quickConnect').addEventListener('click', async () => {
+            try {
+                await ensureConnection();
+                await updateCardDisplay();
+            } catch (error) {
+                addLog(`接続失敗: ${error.message}`, 'error');
+            }
+        });
+
+        document.getElementById('customText').addEventListener('input', updateByteCount);
+
+        document.getElementById('writeCustom').addEventListener('click', async () => {
+            const text = document.getElementById('customText').value;
+            const block = parseInt(document.getElementById('customBlock').value);
+            
+            if (!text.trim()) {
+                addLog('入力エラー: テキストを入力してください', 'error');
+                return;
+            }
+            
+            await performJapaneseTest(text, block);
+            document.getElementById('customText').value = '';
+            updateByteCount();
+        });
+
+        document.getElementById('readAll').addEventListener('click', updateCardDisplay);
+        document.getElementById('refreshCard').addEventListener('click', updateCardDisplay);
+
+        document.getElementById('clearLog').addEventListener('click', () => {
+            document.getElementById('log-output').innerHTML = '';
+            addLog('ログをクリアしました');
+        });
+
+        // 初期化
+        addLog('🇯🇵 日本語文字列テストページを読み込みました');
+        addLog('💡 まず「接続」ボタンをクリックしてUSBデバイスに接続してください');
+        updateByteCount();
+    </script>
+</body>
+</html>
